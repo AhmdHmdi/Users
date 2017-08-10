@@ -33,8 +33,8 @@ public class CreateUser extends Base {
 	public void FillData(WebDriver driver){
 		driver.findElement(By.id("name")).sendKeys("TestName");
 		driver.findElement(By.id("email")).sendKeys("Test@Name.com");
-		driver.findElement(By.id("password")).sendKeys("p@ssw@rd");
-		driver.findElement(By.id("confirmationPassword")).sendKeys("p@ssw@rd");
+		driver.findElement(By.id("password")).sendKeys("12p@ssw5@rd");
+		driver.findElement(By.id("confirmationPassword")).sendKeys("12p@ssw5@rd");
 		driver.findElement(By.xpath("/html/body/div/div/div/form/fieldset/div[5]/button")).click();
 	}
 }

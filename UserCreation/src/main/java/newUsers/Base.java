@@ -3,7 +3,6 @@ package newUsers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-
 public class Base {
 	
 	public static String baseURL = "";
@@ -36,5 +35,5 @@ public class Base {
 		return driver;
 	}
 	
-	
+
 }
