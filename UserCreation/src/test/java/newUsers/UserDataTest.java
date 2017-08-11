@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
-public class CreateUser extends Base {
+public class UserDataTest extends Base {
 
 	String NameErrorRequired, NameErrorUnique, UserNameOne, UserNameOneRepeated,
 	strValueToAddToEmailOne, strValueToAddToEmailTwo
