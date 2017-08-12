@@ -1,6 +1,8 @@
 package newUsers;
 
-import java.util.concurrent.ThreadLocalRandom;
+import static org.junit.Assert.fail;
+
+
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
@@ -10,10 +12,13 @@ import org.openqa.selenium.By;
 public class UserDataTest extends Base {
 
 	String NameErrorRequired, NameErrorUnique, UserNameOne, UserNameOneRepeated,
-	strValueToAddToEmailOne, strValueToAddToEmailTwo
+	strValueOfEmailOne, strValueOfEmailTwo
 	
 	,EmailErrorRequired,EmailErrorUnique, strEmail, strEmailRepeated, 
 	strValueToAddToNameOne, strValueToAddToNameTwo
+	
+	,strValueToMakeUniqueValues
+
 	= null;
 	
 	
@@ -33,9 +38,10 @@ public class UserDataTest extends Base {
 	public void UserNameIsRequired(){
 				// Open Browser
 				LoadBrowser();
+
 				// Test Case #1: User Name is required. 
 				// Fill in all data but set user name to be NULL
-				FillUserData(driver, "", "Email@Domain.com", "12p@ssw3@rd", "12p@ssw3@rd", true);
+				FillUserData(driver, "", "Email@TestDomain.com", "12p@ssw3@rd", "12p@ssw3@rd", true);
 				
 				//Assertion of 'User Name is required'
 				NameErrorRequired = driver.findElement(By.id("user.name.error")).getText().toString();		
@@ -69,33 +75,28 @@ public class UserDataTest extends Base {
 			
 			// We have two cases as we don't delete all users: If user exists and if not. 
 			// As Email should be unique too, we will create a random value twice and added them to email accounts
-			int ValueToAddedToEmailOne = ThreadLocalRandom.current().nextInt(5, 1000 + 1);
-			strValueToAddToEmailOne = ""+ValueToAddedToEmailOne;
-			int ValueToAddedToEmailTwo = ThreadLocalRandom.current().nextInt(1005, 2000 + 1);
-			strValueToAddToEmailTwo = ""+ValueToAddedToEmailTwo;
+			strValueOfEmailOne = RandomValue(10, 10000, "EmailOne", true);
+			strValueOfEmailTwo = RandomValue(10010, 20000, "EmailTwo", true);
 			
 			// Use Random Values
-			int ValueToAddToName = ThreadLocalRandom.current().nextInt(5, 1000 + 1);
-						
-			UserNameOne = "Name"+ValueToAddToName;
+			UserNameOne = RandomValue(100, 10000, "Name", false);
 			UserNameOneRepeated = UserNameOne;
 			
 			boolean NameExists = checkNameIsUnique(UserNameOneRepeated);
 			if (NameExists){  
 				// As the name is existing, so we will need to create a user with same data
 				System.out.print("User Name Found");
-				FillUserData(driver, UserNameOneRepeated, ValueToAddedToEmailOne+"Email@Domain.com", "12p@ssw3@rd", "12p@ssw3@rd", true);
+				FillUserData(driver, UserNameOneRepeated, strValueOfEmailOne, "12p@ssw3@rd", "12p@ssw3@rd", true);
 			}
 			else
 			{
 				// User is not existing, we will create same name twice. 
 				// First Time	
-				FillUserData(driver, UserNameOne, "E"+strValueToAddToEmailOne+"@Domain.com", "12p@ssw3@rd", "12p@ssw3@rd", true);
-				
+				FillUserData(driver, UserNameOne, strValueOfEmailOne, "12p@ssw3@rd", "12p@ssw3@rd", true);
 				Thread.sleep(2000);
 				driver.navigate().to(baseURL);
 				// Second Time
-				FillUserData(driver, UserNameOneRepeated, "E"+strValueToAddToEmailTwo+"@Domain.com", "12p@ssw3@rd", "12p@ssw3@rd", true);
+				FillUserData(driver, UserNameOneRepeated, strValueOfEmailTwo, "12p@ssw3@rd", "12p@ssw3@rd", true);
 			}
 		
 		// Assertion of 'User Name Must be unique' 
@@ -145,15 +146,11 @@ public class UserDataTest extends Base {
 			
 			// We have two cases as we don't delete all users: If email exists and if not. 
 			// As Name should be unique too, we will create a random value twice and added them to user Name
-			int ValueToAddedToNameOne = ThreadLocalRandom.current().nextInt(5, 1000 + 1);
-			strValueToAddToNameOne = ""+ValueToAddedToNameOne;
-			int ValueToAddedToNameTwo = ThreadLocalRandom.current().nextInt(1005, 2000 + 1);
-			strValueToAddToNameTwo = ""+ValueToAddedToNameTwo;
+			strValueToAddToNameOne = RandomValue(5, 10000, "EmailUnique", false);
+			strValueToAddToNameTwo = RandomValue(10050, 50000, "EmailUnique", false);
 			
 			// Use Random Values
-			int ValueToAddToEmail = ThreadLocalRandom.current().nextInt(5, 1000 + 1);
-						
-			strEmail = "E"+ValueToAddToEmail+"@Domain.com";
+			strEmail = RandomValue(10000, 999999, "EmailUnique", true);
 			strEmailRepeated = strEmail;
 			
 			boolean EmailExists = checkEmailIsUnique(strEmailRepeated);
@@ -181,4 +178,26 @@ public class UserDataTest extends Base {
 		}
 	}
 
+	@Test
+	public void UserPasswordIsRequired() throws InterruptedException{
+				// Open Browser
+				LoadBrowser();
+
+				// Test Case #5: Password is required. 
+				// Fill in all data but set Password to be NULL
+				FillUserData(driver, "PasswordIsRequired", "Pass@isrequired.org", "", "", true);
+				
+				//Assertion of 'Password is required'
+				Boolean isPresent = driver.findElement(By.id("user.password.error")).getText().isEmpty();		
+				if (isPresent)
+				{
+					fail("Assertion of 'Email is required' is failed.");
+				}else
+				{
+					EmailErrorRequired = driver.findElement(By.id("user.password.error")).getText().toString();		
+					Assert.assertEquals("Assertion of 'Email is required' is done successfully.",EmailErrorRequired, "Required") ;
+				}
+				
+	}
+	
 }

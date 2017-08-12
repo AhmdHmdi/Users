@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -15,6 +16,7 @@ public class Base {
 	public static WebDriver driver = null;
 	private final String USER_AGENT = "Mozilla/5.0";
 	private boolean CheckNameExists= false;
+	private String strRandom = "";
 
 	// Setup FireFox and Chrome Driver. 
 	public static WebDriver LoadDriver(WebDriver driver, String DriverName)
@@ -171,5 +173,19 @@ public class Base {
 		//print result
 		System.out.println(response.toString());
 
+	}
+
+	// Get Random Value
+	public String RandomValue(int min, int max, String strPrefix, Boolean IfEmail){
+		int ValueToAddedToEmailOne = ThreadLocalRandom.current().nextInt(min, max + 1);
+		
+		if (IfEmail){
+			strRandom = strPrefix+"@Random"+ValueToAddedToEmailOne+".com";
+		}
+		else
+		{
+			strRandom = strPrefix+"Random"+ValueToAddedToEmailOne;
+		}
+				return strRandom;
 	}
 }
