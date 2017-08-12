@@ -5,9 +5,7 @@ import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.By;
 
 public class UserDataTest extends Base {
 
@@ -19,6 +17,7 @@ public class UserDataTest extends Base {
 	
 	,strValueToMakeUniqueValues
 
+	,strValueOfName,strValueOfEmail
 	= null;
 	
 	
@@ -44,8 +43,14 @@ public class UserDataTest extends Base {
 				FillUserData(driver, "", "Email@TestDomain.com", "12p@ssw3@rd", "12p@ssw3@rd", true);
 				
 				//Assertion of 'User Name is required'
-				NameErrorRequired = driver.findElement(By.id("user.name.error")).getText().toString();		
-				Assert.assertEquals("Assertion of 'User Name is required' is done successfully.",NameErrorRequired, "Required") ;
+				Boolean Passed= AssertElement("user.name.error","Required");
+				if (Passed)
+				{
+					System.out.println("Assertion of 'User Name is required' is done successfully.");
+				}else
+				{
+					fail("Assertion of 'User Name is required' is failed.");
+				}
 	}
 
 	@Test 
@@ -101,8 +106,14 @@ public class UserDataTest extends Base {
 		
 		// Assertion of 'User Name Must be unique' 
 		Thread.sleep(2000);
-		NameErrorUnique = driver.findElement(By.id("user.name.error")).getText().toString();
-		Assert.assertEquals("Assertion of 'User Name Must be unique' is done successfully.",NameErrorUnique, "Must be unique") ;
+		Boolean Passed= AssertElement("user.name.error","Must be unique");
+		if (Passed)
+		{
+			System.out.println("Assertion of 'User Name is required' is done successfully.");
+		}else
+		{
+			fail("Assertion of 'User Name is required' is failed.");
+		}
 		}
 	}
 
@@ -115,8 +126,14 @@ public class UserDataTest extends Base {
 				FillUserData(driver, "EmailIsRequired", "", "12p@ssw3@rd", "12p@ssw3@rd", true);
 				
 				//Assertion of 'Email is required'
-				EmailErrorRequired = driver.findElement(By.id("user.email.error")).getText().toString();		
-				Assert.assertEquals("Assertion of 'Email is required' is done successfully.",EmailErrorRequired, "Required") ;
+				Boolean Passed= AssertElement("user.email.error","Required");
+				if (Passed)
+				{
+					System.out.println("Assertion of 'Email is required' is done successfully.");
+				}else
+				{
+					fail("Assertion of 'Email is required' is failed.");
+				}
 	}
 	
 	@Test 
@@ -173,8 +190,15 @@ public class UserDataTest extends Base {
 		
 		// Assertion of 'User Email Must be unique' 
 		Thread.sleep(2000);
-		EmailErrorUnique = driver.findElement(By.id("user.email.error")).getText().toString();
-		Assert.assertEquals("Assertion of 'User Email Must be unique' is done successfully.",EmailErrorUnique, "Must be unique") ;
+		//Assertion of 'Email is required'
+		Boolean Passed= AssertElement("user.email.error","Must be unique");
+		if (Passed)
+		{
+			System.out.println("Assertion of 'Email is required' is done successfully.");
+		}else
+		{
+			fail("Assertion of 'Email is required' is failed.");
+		}
 		}
 	}
 
@@ -183,21 +207,24 @@ public class UserDataTest extends Base {
 				// Open Browser
 				LoadBrowser();
 
+				strValueOfName = RandomValue(10, 10000, "Pass", false);
+				strValueOfEmail = RandomValue(10010, 20000, "Pass", true);
 				// Test Case #5: Password is required. 
 				// Fill in all data but set Password to be NULL
-				FillUserData(driver, "PasswordIsRequired", "Pass@isrequired.org", "", "", true);
+				FillUserData(driver, strValueOfName, strValueOfEmail, "", "", true);
 				
 				//Assertion of 'Password is required'
-				Boolean isPresent = driver.findElement(By.id("user.password.error")).getText().isEmpty();		
-				if (isPresent)
+				Boolean Passed= AssertElement("user.password.error","Required");
+				if (Passed)
 				{
-					fail("Assertion of 'Email is required' is failed.");
+					System.out.println("Assertion of 'Password is required' is done successfully.");
 				}else
 				{
-					EmailErrorRequired = driver.findElement(By.id("user.password.error")).getText().toString();		
-					Assert.assertEquals("Assertion of 'Email is required' is done successfully.",EmailErrorRequired, "Required") ;
+					fail("Assertion of 'Password is required' is failed.");
 				}
 				
 	}
+	
+	
 	
 }

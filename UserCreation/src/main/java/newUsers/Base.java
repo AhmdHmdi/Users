@@ -6,10 +6,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+
 public class Base {
 	
 	public static String baseURL = "";
@@ -17,6 +19,7 @@ public class Base {
 	private final String USER_AGENT = "Mozilla/5.0";
 	private boolean CheckNameExists= false;
 	private String strRandom = "";
+	Boolean isPresent= false;
 
 	// Setup FireFox and Chrome Driver. 
 	public static WebDriver LoadDriver(WebDriver driver, String DriverName)
@@ -180,12 +183,37 @@ public class Base {
 		int ValueToAddedToEmailOne = ThreadLocalRandom.current().nextInt(min, max + 1);
 		
 		if (IfEmail){
-			strRandom = strPrefix+"@Random"+ValueToAddedToEmailOne+".com";
+			strRandom = strPrefix+"@R"+ValueToAddedToEmailOne+".com";
 		}
 		else
 		{
-			strRandom = strPrefix+"Random"+ValueToAddedToEmailOne;
+			strRandom = strPrefix+"R"+ValueToAddedToEmailOne;
 		}
 				return strRandom;
 	}
+
+	// Assertion 
+	public boolean AssertElement(String elementId, String ExpectedMessage)
+	{
+	Boolean Passed = false;	
+	try{
+		
+		isPresent = driver.findElement(By.id(elementId)).getText().isEmpty();
+		
+	} catch(Exception e){
+		isPresent = true;
+	}
+	
+	if (isPresent)
+	{
+		Passed = false;
+	}else
+	{
+		Passed = true;
+		String ActualMessage = driver.findElement(By.id(elementId)).getText().toString();		
+		Assert.assertEquals("Passed",ExpectedMessage, ActualMessage) ;
+	}
+	return Passed;
+	}
+
 }
