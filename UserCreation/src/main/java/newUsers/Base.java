@@ -10,6 +10,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class Base {
 	
@@ -26,7 +29,15 @@ public class Base {
 		if (DriverName == "F")
 		{
 			System.setProperty("webdriver.gecko.driver", "src/drivers/geckodriver.exe");
-			driver = new FirefoxDriver();
+			ProfilesIni profile = new ProfilesIni();
+			FirefoxProfile Uprofile = profile.getProfile("default");
+			Uprofile.setAcceptUntrustedCertificates(true);
+			Uprofile.setAssumeUntrustedCertificateIssuer(true);
+			Uprofile.setPreference("security.insecure_field_warning.contextual.enabled", false);
+			DesiredCapabilities cap = DesiredCapabilities.firefox();
+			cap.setCapability(FirefoxDriver.PROFILE, Uprofile);
+			cap.setCapability("marionette", true);
+			driver = new FirefoxDriver(cap);
 			return driver;
 		}
 		else if (DriverName == "C")
@@ -184,7 +195,7 @@ public class Base {
 	}else
 	{
 		String ActualMessage = driver.findElement(By.id(elementId)).getText().toString();
-		if (ExpectedMessage == ActualMessage)
+		if (ExpectedMessage.equals(ActualMessage))
 		{
 			Passed = true;
 		}else
