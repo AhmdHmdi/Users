@@ -20,8 +20,6 @@ public class UserDataTest extends Base {
 	,strValueOfName,strValueOfEmail
 	= null;
 	
-	
-	
 	// BE CAUTIOUS, IF THIS VALUE IS TRUE, ALL USERS WILL BE DELETED WHEN RUNNING TEST CASES. 
 	Boolean UsingWebServiceDelete = false; 
 	
@@ -225,6 +223,27 @@ public class UserDataTest extends Base {
 				
 	}
 	
-	
+	@Test
+	public void UserPasswordsNotSame() throws InterruptedException{
+				// Open Browser
+				LoadBrowser();
+
+				strValueOfName = RandomValue(10, 10000, "Pass", false);
+				strValueOfEmail = RandomValue(10010, 20000, "Pass", true);
+				// Test Case #6: Passwords are not the same. 
+				// Fill in all data but set Password a value which is different than the confirmation password.
+				FillUserData(driver, strValueOfName, strValueOfEmail, "123456", "654321", true);
+				
+				//Assertion of 'Password is required'
+				Boolean Passed= AssertElement("user.confirmationPassword.error","passwords are not the same");
+				if (Passed)
+				{
+					System.out.println("Assertion of 'passwords are not the same' is done successfully.");
+				}else
+				{
+					fail("Assertion of 'passwords are not the same' is failed.");
+				}
+				
+	}
 	
 }

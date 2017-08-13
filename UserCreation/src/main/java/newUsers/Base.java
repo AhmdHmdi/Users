@@ -6,7 +6,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -21,9 +20,9 @@ public class Base {
 	private String strRandom = "";
 	Boolean isPresent= false;
 
-	// Setup FireFox and Chrome Driver. 
 	public static WebDriver LoadDriver(WebDriver driver, String DriverName)
 	{
+		// Setup FireFox and Chrome Driver. 
 		if (DriverName == "F")
 		{
 			System.setProperty("webdriver.gecko.driver", "src/drivers/geckodriver.exe");
@@ -44,9 +43,9 @@ public class Base {
 		return driver;
 	}
 	
-	// Use a generic method to fill in the data of user
-	// Fill in User Data( Web Driver, User Name, User Email, Password, Confirm Password, Click on button Submit or Not) 
 	public void FillUserData(WebDriver driver, String varName, String varEmail, String varPassword, String varConfirmPassword, Boolean varSubmit){
+		// Fill in User Data( Web Driver, User Name, User Email, Password, Confirm Password, Click on button Submit or Not) 
+
 		driver.findElement(By.id("name")).sendKeys(varName);
 		driver.findElement(By.id("email")).sendKeys(varEmail);
 		driver.findElement(By.id("password")).sendKeys(varPassword);
@@ -67,9 +66,10 @@ public class Base {
 		checkNameorEmailExists(baseURL+"/user/all/json", "", varEmail);
 		return CheckNameExists;	
 	}
-	// HTTP GET request
-	public void sendGet(String varURL) throws Exception {
 
+	public String sendGet(String varURL) throws Exception {
+
+		// Use Web Service Action GET, to retrieve all Users data 
 			String url = varURL; 
 
 			URL obj = new URL(url);
@@ -95,49 +95,28 @@ public class Base {
 			}
 			in.close();
 
-			//print result
-			System.out.println(response.toString());
+			return response.toString();
 
 		}
 	
-	// HTTP GET request, Check name is included on the response.
 	public boolean checkNameorEmailExists(String varURL, String varName, String varEmail) throws Exception {
 
-			String url = varURL; 
-
-			URL obj = new URL(url);
-			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-			// optional default is GET
-			con.setRequestMethod("GET");
-
-			//add request header
-			con.setRequestProperty("User-Agent", USER_AGENT);
-
-			int responseCode = con.getResponseCode();
-			System.out.println("\nSending 'GET' request to URL : " + url);
-			System.out.println("Response Code : " + responseCode);
-
-			BufferedReader in = new BufferedReader(
-			        new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuffer response = new StringBuffer();
-
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
-			}
-			in.close();
+			// Select data of All Users
+			String strResponse=sendGet(varURL);
+			
 
 			//print result
-			System.out.println(response.toString().toLowerCase()+"\n");
+			System.out.println(strResponse.toLowerCase()+"\n");
+			
+			// Check Email or Name exists according to Method parameter 
 			
 			if (varEmail == ""){
 			System.out.println(varName.toLowerCase());
-			return CheckNameExists= response.toString().toLowerCase().contains(varName.toLowerCase());
+			return CheckNameExists= strResponse.toLowerCase().contains(varName.toLowerCase());
 			}
 			else if (varName == ""){
 			System.out.println(varEmail.toLowerCase());
-			return CheckNameExists= response.toString().toLowerCase().contains(varEmail.toLowerCase());
+			return CheckNameExists= strResponse.toLowerCase().contains(varEmail.toLowerCase());
 			}
 			else
 			{
@@ -146,7 +125,6 @@ public class Base {
 
 		}
 	
-	// HTTP DELETE Request
 	public void sendDelete(String varURL) throws Exception {
 
 		String url = varURL; 
@@ -178,7 +156,6 @@ public class Base {
 
 	}
 
-	// Get Random Value
 	public String RandomValue(int min, int max, String strPrefix, Boolean IfEmail){
 		int ValueToAddedToEmailOne = ThreadLocalRandom.current().nextInt(min, max + 1);
 		
@@ -192,14 +169,11 @@ public class Base {
 				return strRandom;
 	}
 
-	// Assertion 
 	public boolean AssertElement(String elementId, String ExpectedMessage)
 	{
 	Boolean Passed = false;	
 	try{
-		
 		isPresent = driver.findElement(By.id(elementId)).getText().isEmpty();
-		
 	} catch(Exception e){
 		isPresent = true;
 	}
@@ -209,9 +183,14 @@ public class Base {
 		Passed = false;
 	}else
 	{
-		Passed = true;
-		String ActualMessage = driver.findElement(By.id(elementId)).getText().toString();		
-		Assert.assertEquals("Passed",ExpectedMessage, ActualMessage) ;
+		String ActualMessage = driver.findElement(By.id(elementId)).getText().toString();
+		if (ExpectedMessage == ActualMessage)
+		{
+			Passed = true;
+		}else
+		{
+			Passed = false;
+		}	
 	}
 	return Passed;
 	}
